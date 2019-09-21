@@ -5,7 +5,7 @@ class Repository:
     def __init__(self, name: str):
         self.name = name
         self.__create_db__()
-        self.__populate_uoms__()
+        self.__populate_units_of_measure__()
         self.__populate_conversions__()
 
     def clear_tables(self):
@@ -69,7 +69,7 @@ class Repository:
         conn.commit()
         conn.close()
 
-    def __populate_uoms__(self):
+    def __populate_units_of_measure__(self):
         self.save_uom("c", "cup")
         self.save_uom("tbsp", "tablespoon")
         self.save_uom("tsp", "teaspoon")
