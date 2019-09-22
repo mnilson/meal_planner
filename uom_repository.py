@@ -1,4 +1,3 @@
-import sqlite3
 from repository_sqlite import Repository
 
 
@@ -45,9 +44,7 @@ class UomRepository(Repository):
         return c.execute("SELECT * FROM uom where name = ?;", [name]).fetchone()
 
     def __conn__(self):
-        conn = sqlite3.connect(self.name)
-        conn.row_factory = sqlite3.Row
-        return conn
+        return super(UomRepository, self).__conn__()
 
     def __create_db__(self):
         conn = self.__conn__()
