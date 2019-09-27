@@ -25,16 +25,20 @@ class RecipeRepository(Repository):
         conn.commit()
         c.close()
 
-    def save_recipe(self, name, notes, ingredients, directions):
+    def save_recipe(self, recipe_id, name, notes, ingredients, directions):
         conn = self.__conn__()
         c = conn.cursor()
-
-        query = f"INSERT INTO recipe (name, notes) " \
-                f"  VALUES ('{name}', '{notes}') " \
-                f"  ON CONFLICT(name) DO UPDATE SET " \
-                f"    notes='{notes}', " \
-                f"    name='{name}'"
-        c.execute(query)
+        if recipe_id is None:
+            query = f"INSERT INTO recipe (name, notes) " \
+                    f"  VALUES ('{name}', '{notes}')"
+            recipe_id = c.execute(query).lastrowid
+        else:
+            query = f"UPDATE recipe" \
+                    f"  SET " \
+                    f"    notes='{notes}', " \
+                    f"    name='{name}'" \
+                    f"  WHERE recipe_id = {recipe_id}"
+            res = c.execute(query)
 
         # insert ingredients
 
@@ -42,6 +46,7 @@ class RecipeRepository(Repository):
 
         conn.commit()
         conn.close()
+        return recipe_id
 
     def retrieve_recipes(self):
         conn = self.__conn__()
@@ -59,7 +64,7 @@ class RecipeRepository(Repository):
     def __create_db__(self):
         conn = self.__conn__()
         c = conn.cursor()
-        c.execute('CREATE TABLE IF NOT EXISTS recipe (name text COLLATE NOCASE, notes text);')
+        c.execute('CREATE TABLE IF NOT EXISTS recipe (recipe_id integer PRIMARY KEY, name text, notes text);')
         c.execute('CREATE TABLE IF NOT EXISTS recipe_ingredient(recipe_id integer, quantity real, uom_id);')
         c.execute('CREATE UNIQUE INDEX IF NOT EXISTS recipe__name ON recipe (name COLLATE NOCASE);')
         conn.commit()

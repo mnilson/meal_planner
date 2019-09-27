@@ -1,5 +1,6 @@
 from ingredient_repository import IngredientRepository
 import unittest
+import sqlite3
 
 
 class TestIngredientRepository(unittest.TestCase):
@@ -12,8 +13,8 @@ class TestIngredientRepository(unittest.TestCase):
 
     def test_save_ingredient__should_save_both_ingredients__when_two_provided(self):
         # Arrange
-        self.test_repo.save_ingredient("test_ingredient_1")
-        self.test_repo.save_ingredient("test_ingredient_2")
+        self.test_repo.save_ingredient(None, "test_ingredient_1")
+        self.test_repo.save_ingredient(None, "test_ingredient_2")
 
         # Act
         actual = self.test_repo.retrieve_ingredients()
@@ -23,19 +24,15 @@ class TestIngredientRepository(unittest.TestCase):
 
     def test_save_ingredient__should_not_save_ingredient_again__when_it_already_exists(self):
         # Arrange
-        self.test_repo.save_ingredient("test_ingredient_1")
-        self.test_repo.save_ingredient("test_ingredient_1")
+        self.test_repo.save_ingredient(None, "test_ingredient_1")
 
         # Act
-        actual = self.test_repo.retrieve_ingredients()
-
-        # Assert
-        self.assertEqual(1, len(actual.fetchall()))
+        self.assertRaises(sqlite3.IntegrityError, self.test_repo.save_ingredient, None, "test_ingredient_1")
 
     def test_save_ingredient__should_not_save_ingredient_again__when_it_already_exists_in_different_case(self):
         # Arrange
-        self.test_repo.save_ingredient("test_ingredient_1")
-        self.test_repo.save_ingredient("TEST_INGREDIENT_1")
+        ingredient_id = self.test_repo.save_ingredient(None, "test_ingredient_1")
+        self.test_repo.save_ingredient(ingredient_id, "TEST_INGREDIENT_1")
 
         # Act
         actual = self.test_repo.retrieve_ingredients()
@@ -46,7 +43,7 @@ class TestIngredientRepository(unittest.TestCase):
     def test_save_ingredient__should_save_name__when_given_name(self):
         # Arrange
         name = "test_ingredient_1"
-        self.test_repo.save_ingredient(name)
+        self.test_repo.save_ingredient(None, name)
 
         # Act
         actual = self.test_repo.retrieve_ingredients().fetchone()["name"]

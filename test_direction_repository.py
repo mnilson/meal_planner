@@ -12,8 +12,8 @@ class TestDirectionRepository(unittest.TestCase):
 
     def test_save_direction__should_save_both_directions__when_two_provided(self):
         # Arrange
-        self.test_repo.save_direction(1, "test_direction_1", 1)
-        self.test_repo.save_direction(1, "test_direction_2", 2)
+        self.test_repo.save_direction(None, 1, "test_direction_1", 1)
+        self.test_repo.save_direction(None, 1, "test_direction_2", 2)
 
         # Act
         actual = self.test_repo.retrieve_directions()
@@ -23,8 +23,8 @@ class TestDirectionRepository(unittest.TestCase):
 
     def test_save_direction__should_not_save_direction_again__when_it_already_exists(self):
         # Arrange
-        self.test_repo.save_direction(1, "test_direction_1", 1)
-        self.test_repo.save_direction(1, "test_direction_1", 2)
+        self.test_repo.save_direction(None, 1, "test_direction_1", 1)
+        self.test_repo.save_direction(1, 1, "test_direction_1", 2)
 
         # Act
         actual = self.test_repo.retrieve_directions()
@@ -34,8 +34,8 @@ class TestDirectionRepository(unittest.TestCase):
 
     def test_save_direction__should_not_save_direction_again__when_it_already_exists_in_different_case(self):
         # Arrange
-        self.test_repo.save_direction(1, "test_direction_1", 1)
-        self.test_repo.save_direction(1, "TEST_DIRECTION_1", 1)
+        self.test_repo.save_direction(None, 1, "test_direction_1", 1)
+        self.test_repo.save_direction(1, 1, "TEST_DIRECTION_1", 1)
 
         # Act
         actual = self.test_repo.retrieve_directions()
@@ -46,7 +46,7 @@ class TestDirectionRepository(unittest.TestCase):
     def test_save_direction__should_save_direction__when_none_exist(self):
         # Arrange
         name = "test_direction_1"
-        self.test_repo.save_direction(1, name, 1)
+        self.test_repo.save_direction(None, 1, name, 1)
 
         # Act
         actual = self.test_repo.retrieve_directions().fetchone()["direction"]

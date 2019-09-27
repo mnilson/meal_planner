@@ -23,13 +23,17 @@ class IngredientRepository(Repository):
         conn.commit()
         c.close()
 
-    def save_ingredient(self, name):
+    def save_ingredient(self, ingredient_id, name):
         conn = self.__conn__()
         c = conn.cursor()
-        c.execute(f"INSERT INTO ingredient (name) VALUES('{name}') "
-                  f"ON CONFLICT(name) DO UPDATE SET name='{name}'")
+        if ingredient_id is None:
+            query = f"INSERT INTO ingredient (name) VALUES('{name}') "
+            ingredient_id = c.execute(query).lastrowid
+        else:
+            c.execute(f"UPDATE ingredient SET name = '{name}' WHERE ingredient_id = {ingredient_id} ")
         conn.commit()
         conn.close()
+        return ingredient_id
 
     def retrieve_ingredients(self):
         conn = self.__conn__()
@@ -47,8 +51,7 @@ class IngredientRepository(Repository):
     def __create_db__(self):
         conn = self.__conn__()
         c = conn.cursor()
-        print(f"~~> {c.execute('SELECT sqlite_version()').fetchone()[0]}")
-        c.execute('CREATE TABLE IF NOT EXISTS ingredient (name text COLLATE NOCASE);')
+        c.execute('CREATE TABLE IF NOT EXISTS ingredient (ingredient_id integer PRIMARY KEY, name text COLLATE NOCASE);')
         c.execute('CREATE UNIQUE INDEX IF NOT EXISTS ingredient__name ON ingredient (name COLLATE NOCASE);')
         conn.commit()
         conn.close()

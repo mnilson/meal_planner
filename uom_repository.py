@@ -52,7 +52,7 @@ class UomRepository(Repository):
         c = conn.cursor()
 
         # Create table0
-        c.execute('CREATE TABLE IF NOT EXISTS uom (name text, description );')
+        c.execute('CREATE TABLE IF NOT EXISTS uom (uom_id integer PRIMARY KEY, name text, description );')
         c.execute('CREATE UNIQUE INDEX IF NOT EXISTS uom__name ON uom (name COLLATE NOCASE);')
 
         conn.commit()
