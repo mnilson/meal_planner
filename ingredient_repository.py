@@ -9,7 +9,7 @@ class IngredientRepository(Repository):
     def clear_tables(self):
         conn = self.__conn__()
         c = conn.cursor()
-        c.execute('''DELETE FROM ingredient;''')
+        c.execute('DELETE FROM ingredient;')
 
         conn.commit()
         conn.close()
@@ -18,7 +18,7 @@ class IngredientRepository(Repository):
         super(IngredientRepository, self).drop_db()
         conn = self.__conn__()
         c = conn.cursor()
-        c.execute('''DROP TABLE IF EXISTS ingredient;''')
+        c.execute('DROP TABLE IF EXISTS ingredient;')
 
         conn.commit()
         c.close()
@@ -48,7 +48,7 @@ class IngredientRepository(Repository):
         conn = self.__conn__()
         c = conn.cursor()
         print(f"~~> {c.execute('SELECT sqlite_version()').fetchone()[0]}")
-        c.execute('''CREATE TABLE IF NOT EXISTS ingredient (id integer, name text COLLATE NOCASE);''')
-        c.execute('''CREATE UNIQUE INDEX IF NOT EXISTS ingredient__name ON ingredient (name COLLATE NOCASE);''')
+        c.execute('CREATE TABLE IF NOT EXISTS ingredient (name text COLLATE NOCASE);')
+        c.execute('CREATE UNIQUE INDEX IF NOT EXISTS ingredient__name ON ingredient (name COLLATE NOCASE);')
         conn.commit()
         conn.close()
