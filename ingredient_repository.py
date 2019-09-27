@@ -26,10 +26,8 @@ class IngredientRepository(Repository):
     def save_ingredient(self, name):
         conn = self.__conn__()
         c = conn.cursor()
-        count = c.execute("SELECT COUNT(*) FROM ingredient;").fetchone()[0] + 1
-        c.execute(f"INSERT INTO ingredient (id, name) "
-                  f"  SELECT {count}, '{name}' "
-                  f"  WHERE NOT EXISTS (SELECT * FROM ingredient WHERE name = '{name}');")
+        c.execute(f"INSERT INTO ingredient (name) VALUES('{name}') "
+                  f"ON CONFLICT(name) DO UPDATE SET name='{name}'")
         conn.commit()
         conn.close()
 
@@ -49,6 +47,8 @@ class IngredientRepository(Repository):
     def __create_db__(self):
         conn = self.__conn__()
         c = conn.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS ingredient (id integer, name text);''')
+        print(f"~~> {c.execute('SELECT sqlite_version()').fetchone()[0]}")
+        c.execute('''CREATE TABLE IF NOT EXISTS ingredient (id integer, name text COLLATE NOCASE);''')
+        c.execute('''CREATE UNIQUE INDEX IF NOT EXISTS ingredient__name ON ingredient (name COLLATE NOCASE);''')
         conn.commit()
         conn.close()

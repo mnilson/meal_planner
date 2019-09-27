@@ -9,7 +9,7 @@ class UomRepository(Repository):
     def clear_tables(self):
         conn = self.__conn__()
         c = conn.cursor()
-        c.execute('''DELETE FROM uom;''')
+        c.execute('DELETE FROM uom;')
 
         conn.commit()
         conn.close()
@@ -18,7 +18,7 @@ class UomRepository(Repository):
         super(UomRepository, self).drop_db()
         conn = self.__conn__()
         c = conn.cursor()
-        c.execute('''DROP TABLE IF EXISTS uom;''')
+        c.execute('DROP TABLE IF EXISTS uom;')
 
         conn.commit()
         c.close()
@@ -26,10 +26,11 @@ class UomRepository(Repository):
     def save_uom(self, name, description):
         conn = self.__conn__()
         c = conn.cursor()
-        count = c.execute("SELECT COUNT(*) FROM uom;").fetchone()[0] + 1
-        c.execute(f"INSERT INTO uom (id, name, description) "
-                  f"  SELECT {count}, '{name}', '{description}' "
-                  f"  WHERE NOT EXISTS (SELECT * FROM uom WHERE name = '{name}');")
+        c.execute(f"INSERT INTO uom (name, description)   "
+                  f"  VALUES ('{name}', '{description}') "
+                  f"  ON CONFLICT(name) DO UPDATE SET "
+                  f"    name='{name}',"
+                  f"    description='{description}';")
         conn.commit()
         conn.close()
 
@@ -51,7 +52,8 @@ class UomRepository(Repository):
         c = conn.cursor()
 
         # Create table0
-        c.execute('''CREATE TABLE IF NOT EXISTS uom (id integer, name text, description );''')
+        c.execute('CREATE TABLE IF NOT EXISTS uom (name text, description );')
+        c.execute('CREATE UNIQUE INDEX IF NOT EXISTS uom__name ON uom (name COLLATE NOCASE);')
 
         conn.commit()
         conn.close()

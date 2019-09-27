@@ -10,9 +10,6 @@ class Repository:
         conn = self.__conn__()
         c = conn.cursor()
         c.execute('''DELETE FROM conversion;''')
-        c.execute('''DELETE FROM ingredient;''')
-        c.execute('''DELETE FROM recipe;''')
-        c.execute('''DELETE FROM recipe_ingredient;''')
 
         conn.commit()
         conn.close()
@@ -21,9 +18,6 @@ class Repository:
         conn = self.__conn__()
         c = conn.cursor()
         c.execute('''DROP TABLE IF EXISTS conversion;''')
-        c.execute('''DROP TABLE IF EXISTS ingredient;''')
-        c.execute('''DROP TABLE IF EXISTS recipe;''')
-        c.execute('''DROP TABLE IF EXISTS recipe_ingredient;''')
 
         conn.commit()
         c.close()
@@ -39,9 +33,6 @@ class Repository:
 
         # Create table
         c.execute('''CREATE TABLE IF NOT EXISTS conversion(uom_1_id integer, uom_2_id integer, factor real);''')
-        c.execute('''CREATE TABLE IF NOT EXISTS ingredient(id integer, name text);''')
-        c.execute('''CREATE TABLE IF NOT EXISTS recipe(id integer, name text, description text);''')
-        c.execute('''CREATE TABLE IF NOT EXISTS recipe_ingredient(id integer, recipe_id integer, quantity real, uom_id);''')
 
         conn.commit()
         conn.close()

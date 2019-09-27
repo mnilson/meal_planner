@@ -24,7 +24,7 @@ class TestUomRepository(unittest.TestCase):
     def test_save_uom__should_not_save_uom_again__when_it_already_exists(self):
         # Arrange
         self.test_repo.save_uom("test_uom_1", "first test unit of measure")
-        self.test_repo.save_uom("test_uom_1", "first test unit of measure")
+        self.test_repo.save_uom("TEST_UOM_1", "first test unit of measure")
 
         # Act
         actual = self.test_repo.retrieve_uoms()
