@@ -1,4 +1,4 @@
-from recipe_repository import RecipeRepository
+from mealplanner.domain.recipe_repository import RecipeRepository
 import unittest
 import sqlite3
 

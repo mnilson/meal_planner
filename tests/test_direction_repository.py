@@ -1,4 +1,4 @@
-from direction_repository import DirectionRepository
+from mealplanner.domain.direction_repository import DirectionRepository
 import unittest
 
 

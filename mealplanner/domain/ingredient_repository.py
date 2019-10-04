@@ -1,4 +1,4 @@
-from repository_sqlite import Repository
+from mealplanner.domain.repository_sqlite import Repository
 
 
 class IngredientRepository(Repository):
