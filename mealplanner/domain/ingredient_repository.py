@@ -1,5 +1,5 @@
 from mealplanner.domain.repository_sqlite import Repository
-
+from mealplanner.domain.ingredient import Ingredient
 
 class IngredientRepository(Repository):
     def __init__(self, name: str):
@@ -43,7 +43,7 @@ class IngredientRepository(Repository):
     def retrieve_ingredient_by_name(self, name):
         conn = self.__conn__()
         c = conn.cursor()
-        return c.execute("SELECT * FROM ingredient where name = ?;", [name]).fetchone()
+        return Ingredient.from_db(c.execute("SELECT * FROM ingredient where name = ?;", [name]).fetchone())
 
     def __conn__(self):
         return super(IngredientRepository, self).__conn__()
