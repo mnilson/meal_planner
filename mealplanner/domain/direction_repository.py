@@ -1,3 +1,4 @@
+from mealplanner.domain.direction import Direction
 from mealplanner.domain.repository_sqlite import Repository
 
 
@@ -23,33 +24,37 @@ class DirectionRepository(Repository):
         conn.commit()
         c.close()
 
-    def save_direction(self, direction_id, recipe_id, direction, step_number):
+    def save_direction(self, direction):
         conn = self.__conn__()
         c = conn.cursor()
-        if direction_id is None:
-            query = f"INSERT INTO direction (recipe_id, direction, step_number) VALUES({recipe_id}, '{direction}', {step_number}) "
-            direction_id = c.execute(query).lastrowid
+        if direction.direction_id is None:
+            query = f"INSERT INTO direction (recipe_id, direction, step_number) VALUES({direction.recipe_id}, '{direction.direction}', {direction.step_number}) "
+            direction.direction_id = c.execute(query).lastrowid
         else:
             c.execute(
                 f"UPDATE direction "
                 f" SET "
-                f"  recipe_id = {recipe_id}, "
-                f"  direction = '{direction}', "
-                f"  step_number = {step_number} "
-                f" WHERE direction_id = {direction_id}")
+                f"  recipe_id = {direction.recipe_id}, "
+                f"  direction = '{direction.direction}', "
+                f"  step_number = {direction.step_number} "
+                f" WHERE direction_id = {direction.direction_id}")
         conn.commit()
         conn.close()
-        return direction_id
+        return direction
 
     def retrieve_directions(self):
         conn = self.__conn__()
         c = conn.cursor()
-        return c.execute("SELECT * FROM direction;")
+        directions = []
+        for row in c.execute("SELECT * FROM direction;").fetchall():
+            directions.append(Direction.from_db(row))
+        return directions
 
     def retrieve_direction_by_name(self, name):
         conn = self.__conn__()
         c = conn.cursor()
-        return c.execute("SELECT * FROM direction where recipe_id = ? order by step_number;", [name]).fetchone()
+        row = c.execute("SELECT * FROM direction where recipe_id = ? order by step_number;", [name]).fetchone()
+        return Direction.from_db(row)
 
     def __conn__(self):
         return super(DirectionRepository, self).__conn__()
