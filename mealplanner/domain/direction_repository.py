@@ -45,9 +45,7 @@ class DirectionRepository(Repository):
     def retrieve_directions(self):
         conn = self.__conn__()
         c = conn.cursor()
-        directions = []
-        for row in c.execute("SELECT * FROM direction;").fetchall():
-            directions.append(Direction.from_db(row))
+        directions = [Direction.from_db(row) for row in c.execute("SELECT * FROM direction;").fetchall()]
         return directions
 
     def retrieve_direction_by_name(self, name):

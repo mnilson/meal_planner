@@ -1,4 +1,5 @@
 from mealplanner.domain.repository_sqlite import Repository
+from mealplanner.domain.recipe import Recipe
 
 
 class RecipeRepository(Repository):
@@ -25,7 +26,10 @@ class RecipeRepository(Repository):
         conn.commit()
         c.close()
 
-    def save_recipe(self, recipe_id, name, notes, ingredients, directions):
+    def save_recipe_2(self, recipe):
+        return self.save_recipe(recipe.name, recipe.notes, recipe.ingredients, recipe.directions, recipe.recipe_id)
+
+    def save_recipe(self, name, notes, ingredients, directions, recipe_id):
         conn = self.__conn__()
         c = conn.cursor()
         if recipe_id is None:
@@ -51,12 +55,14 @@ class RecipeRepository(Repository):
     def retrieve_recipes(self):
         conn = self.__conn__()
         c = conn.cursor()
-        return c.execute("SELECT * FROM recipe;")
+        recipes = [Recipe.from_db(row) for row in c.execute("SELECT * FROM recipe;").fetchall()]
+        return recipes
 
     def retrieve_recipe_by_name(self, name):
         conn = self.__conn__()
         c = conn.cursor()
-        return c.execute("SELECT * FROM recipe where name = ?;", [name]).fetchone()
+        row = c.execute("SELECT * FROM recipe where name = ?;", [name]).fetchone()
+        return Recipe(row)
 
     def __conn__(self):
         return super(RecipeRepository, self).__conn__()
