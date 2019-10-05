@@ -23,22 +23,22 @@ class IngredientRepository(Repository):
         conn.commit()
         c.close()
 
-    def save_ingredient(self, ingredient_id, name):
+    def save_ingredient_2(self, ingredient):
         conn = self.__conn__()
         c = conn.cursor()
-        if ingredient_id is None:
-            query = f"INSERT INTO ingredient (name) VALUES('{name}') "
-            ingredient_id = c.execute(query).lastrowid
+        if ingredient.ingredient_id is None:
+            query = f"INSERT INTO ingredient (name) VALUES('{ingredient.name}') "
+            ingredient.ingredient_id = c.execute(query).lastrowid
         else:
-            c.execute(f"UPDATE ingredient SET name = '{name}' WHERE ingredient_id = {ingredient_id} ")
+            c.execute(f"UPDATE ingredient SET name = '{ingredient.name}' WHERE ingredient_id = {ingredient.ingredient_id} ")
         conn.commit()
         conn.close()
-        return ingredient_id
+        return ingredient
 
     def retrieve_ingredients(self):
         conn = self.__conn__()
         c = conn.cursor()
-        return c.execute("SELECT * FROM ingredient;")
+        return [Ingredient.from_db(row) for row in c.execute("SELECT * FROM ingredient;")]
 
     def retrieve_ingredient_by_name(self, name):
         conn = self.__conn__()

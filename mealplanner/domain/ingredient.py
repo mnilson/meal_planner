@@ -5,7 +5,7 @@ class Ingredient:
 
     @staticmethod
     def from_db(row):
-        ingredient = Ingredient(row["name"], row["ingredient_id"])
+        return Ingredient(row["name"], row["ingredient_id"])
 
     def get_name(self):
         return self.name
