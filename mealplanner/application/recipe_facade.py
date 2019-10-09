@@ -17,3 +17,12 @@ class RecipeFacade:
         self.direction_repo.retrieve_directions()
         self.ingredient_repo.retrieve_ingredients()
         self.uom_repo.retrieve_uoms()
+
+    def get_all_ingredients(self):
+        return self.ingredient_repo.retrieve_ingredients()
+
+    def get_recipe(self, name):
+        recipe = self.recipe_repo.retrieve_recipe_by_name(name)
+        directions = self.direction_repo.retrieve_directions_by_recipe_id(recipe.recipe_id)
+        recipe.directions = directions
+        #TODO: add ingredients onto recipe too

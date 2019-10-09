@@ -45,6 +45,7 @@ class RecipeRepository(Repository):
             res = c.execute(query)
 
         # insert ingredients
+        # TODO: need recipe_ingredient object? to encapsulate ingredient and recipe specific attributes (quantity etc)
 
         # insert directions
 

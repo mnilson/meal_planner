@@ -48,7 +48,7 @@ class DirectionRepository(Repository):
         directions = [Direction.from_db(row) for row in c.execute("SELECT * FROM direction;").fetchall()]
         return directions
 
-    def retrieve_direction_by_name(self, name):
+    def retrieve_directions_by_recipe_id(self, name):
         conn = self.__conn__()
         c = conn.cursor()
         row = c.execute("SELECT * FROM direction where recipe_id = ? order by step_number;", [name]).fetchone()
