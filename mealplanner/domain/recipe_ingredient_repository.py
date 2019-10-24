@@ -1,3 +1,4 @@
+from mealplanner.domain.recipe_ingredient import RecipeIngredient
 from mealplanner.domain.repository_sqlite import Repository
 
 
@@ -37,7 +38,7 @@ class RecipeIngredientRepository(Repository):
     def retrieve_recipe_ingredients(self, recipe_id):
         conn = self.__conn__()
         c = conn.cursor()
-        return c.execute(f"SELECT * FROM recipe_ingredient where recipe_id = {recipe_id};")
+        return [RecipeIngredient.from_db(row) for row in c.execute(f"SELECT * FROM recipe_ingredient where recipe_id = {recipe_id};")]
 
     def __conn__(self):
         return super(RecipeIngredientRepository, self).__conn__()
