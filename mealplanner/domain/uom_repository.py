@@ -39,6 +39,11 @@ class UomRepository(Repository):
         c = conn.cursor()
         return c.execute("SELECT * FROM uom;")
 
+    def retrieve_uom_by_id(self, id):
+        conn = self.__conn__()
+        c = conn.cursor()
+        return c.execute("SELECT * FROM uom where uom_id = ?;", [id]).fetchone()
+
     def retrieve_uom_by_name(self, name):
         conn = self.__conn__()
         c = conn.cursor()

@@ -40,6 +40,11 @@ class IngredientRepository(Repository):
         c = conn.cursor()
         return [Ingredient.from_db(row) for row in c.execute("SELECT * FROM ingredient;")]
 
+    def retrieve_ingredient_by_id(self, ingredient_id):
+        conn = self.__conn__()
+        c = conn.cursor()
+        return Ingredient.from_db(c.execute("SELECT * FROM ingredient where ingredient_id = ?;", [ingredient_id]).fetchone())
+
     def retrieve_ingredient_by_name(self, name):
         conn = self.__conn__()
         c = conn.cursor()
